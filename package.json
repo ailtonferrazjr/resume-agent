@@ -1,0 +1,35 @@
+{
+  "name": "resume-agent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "tsx --tsconfig tsconfig.cli.json cli/generate.ts",
+    "generate:cover": "tsx --tsconfig tsconfig.cli.json cli/generate-cover-letter.ts",
+    "intake": "tsx --tsconfig tsconfig.cli.json cli/intake.ts",
+    "score": "tsx --tsconfig tsconfig.cli.json cli/score.ts",
+    "tracker": "tsx --tsconfig tsconfig.cli.json cli/tracker.ts",
+    "tracker:add": "tsx --tsconfig tsconfig.cli.json cli/tracker.ts add",
+    "tracker:update": "tsx --tsconfig tsconfig.cli.json cli/tracker.ts update",
+    "tracker:list": "tsx --tsconfig tsconfig.cli.json cli/tracker.ts list",
+    "upload": "tsx --tsconfig tsconfig.cli.json cli/upload.ts",
+    "upload:list": "tsx --tsconfig tsconfig.cli.json cli/upload.ts --list",
+    "db:push": "npx drizzle-kit push",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "docx": "^9.0.0",
+    "dotenv": "^17.3.1",
+    "drizzle-orm": "^0.45.1",
+    "google-auth-library": "^9.0.0",
+    "googleapis": "^171.4.0",
+    "postgres": "^3.4.8",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "drizzle-kit": "^0.31.9",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
