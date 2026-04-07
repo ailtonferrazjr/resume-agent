@@ -42,10 +42,17 @@ This is required before anything else works. The onboarding skill interviews you
 | `/setup-gcloud` | Set up Google Drive upload (optional) |
 | `/setup-browser` | Set up LinkedIn scraping (optional) |
 
-## Prerequisites
+## What You Need
 
-- **Node.js 20+**
-- **Claude Code CLI**
+| Dependency | What it does | Required? |
+|---|---|---|
+| **Node.js 20+** | Runs everything | Yes |
+| **Claude Code** | Primary interface (skills) | Yes |
+| **agent-browser** | Scrape jobs from LinkedIn and other sites | No — you can paste JDs manually |
+| **gcloud CLI** | Upload .docx resumes to Google Drive | No — generates .docx locally with `--docx` flag |
+| **Postgres** | Cloud-backed application tracker | No — uses local JSON file by default |
+
+The core workflow (onboard, intake, tailor, generate) works with just Node.js and Claude Code. Everything else is optional and can be set up later with the `/setup-*` skills.
 
 ## Optional Integrations
 
