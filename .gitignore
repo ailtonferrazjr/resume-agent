@@ -5,3 +5,6 @@ outputs/*.docx
 .browser-profile/
 .env
 *.log
+*.tsbuildinfo
+docs/tracker.json
+docs/candidate-profile.json

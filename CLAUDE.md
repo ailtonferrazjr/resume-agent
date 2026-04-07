@@ -128,9 +128,11 @@ agent-browser wait --load networkidle
 agent-browser get-text           # Extract page text
 ```
 
-### Application Tracker (optional)
+### Application Tracker
 
-Requires Postgres. Setup via `/setup-db`.
+Works out of the box using a local JSON file (`docs/tracker.json`). No setup required.
+
+Optionally upgrade to Postgres for cloud-backed storage via `/setup-db`.
 
 ```bash
 npm run tracker -- list                    # List all applications

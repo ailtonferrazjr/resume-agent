@@ -15,26 +15,31 @@ agent-browser is required for LinkedIn job scraping (`/linkedin-scrape`) and gen
 which agent-browser
 ```
 
-If not found:
-> "Install agent-browser: `npm install -g @anthropic/agent-browser`"
-
-### Step 2: First-time LinkedIn login (headed mode)
-
-LinkedIn requires manual login the first time to handle CAPTCHAs and 2FA.
-
-Tell the user:
-> "I'm going to open a visible browser window. You'll need to:"
-> 1. Log into LinkedIn manually
-> 2. Complete any verification/CAPTCHA challenges
-> 3. Once you see your LinkedIn feed, come back here and tell me
+If not found, install it:
 
 ```bash
-agent-browser --headed --profile .browser-profile open "https://www.linkedin.com/login"
+npm install -g agent-browser
 ```
 
-Wait for the user to confirm they've logged in.
+Verify it installed:
 
-### Step 3: Verify login persisted
+```bash
+agent-browser --version
+```
+
+If the install fails (permissions), suggest:
+> "Try with sudo: `sudo npm install -g agent-browser`"
+> "Or if using nvm, make sure you're on the right Node version first."
+
+### Step 2: Check for existing LinkedIn session
+
+If `.browser-profile` directory exists, test if the session is still valid:
+
+```bash
+ls .browser-profile 2>/dev/null && echo "profile exists" || echo "no profile"
+```
+
+If profile exists, test it:
 
 ```bash
 agent-browser --profile .browser-profile open "https://www.linkedin.com/feed"
@@ -42,10 +47,47 @@ agent-browser wait --load networkidle
 agent-browser get-text
 ```
 
-**If feed content appears:** "LinkedIn login is saved. Headless scraping is ready."
+Check if the output contains feed content (posts, names) vs a login wall.
+
+**If feed content appears:** "LinkedIn session is still valid. You're all set."
+Skip to Step 4.
+
+**If login wall or no profile:** Continue to Step 3.
+
+### Step 3: LinkedIn login (headed mode)
+
+LinkedIn requires manual login to handle CAPTCHAs and 2FA. This must be done in a visible browser window.
+
+Tell the user:
+> "I'm going to open a browser window. You'll need to:"
+> 1. Log into LinkedIn with your credentials
+> 2. Complete any CAPTCHA or 2FA challenges
+> 3. Wait until you see your LinkedIn feed
+> 4. Then come back here and tell me you're done
+>
+> **Important:** Don't close the browser window — I'll close it after verifying.
+
+```bash
+agent-browser --headed --profile .browser-profile open "https://www.linkedin.com/login"
+```
+
+Wait for the user to confirm they've logged in. Then verify the session saved:
+
+```bash
+agent-browser --profile .browser-profile open "https://www.linkedin.com/feed"
+agent-browser wait --load networkidle
+agent-browser get-text
+```
+
+**If feed content appears:** "Login saved successfully."
 
 **If login wall appears:**
-> "The session didn't persist. Delete `.browser-profile` and try again."
+> "The session didn't persist. This sometimes happens with LinkedIn's security."
+> "Let's try again — I'll delete the old profile and start fresh:"
+```bash
+rm -rf .browser-profile
+```
+> "Run `/setup-browser` again to retry."
 
 ### Step 4: Test with a real job posting
 

@@ -1,6 +1,6 @@
 # Google Docs Resume Template — Formatting Spec
 
-> Source: [Ailton Ferraz - v1](https://docs.google.com/document/d/16rhDiJIaaiGc-XouthdqExWj5psOKEcuTYUoST7s5Hw/edit?usp=sharing)
+> Formatting reference for the .docx resume renderer
 
 ---
 
@@ -100,7 +100,7 @@
 
 ```
 ┌──────────────────────────────────────────┐
-│              AILTON FERRAZ               │  ← 25pt, Bold, Small Caps, Center
+│              JANE DOE                    │  ← 25pt, Bold, Small Caps, Center
 │                                          │
 │  Email me: ...        LinkedIn: ...      │  ← 10pt, Green labels + Black values
 │  Call me: ...         Address: ...       │

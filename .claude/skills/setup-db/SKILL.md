@@ -1,17 +1,22 @@
 ---
 name: setup-db
-description: Set up the optional Postgres database for application tracking. Guides through Supabase, Neon, or local Postgres setup. Use when the user says "setup database", "setup tracker", "setup db", or wants to track applications.
+description: Upgrade from local JSON tracker to Postgres for application tracking. Use when the user says "setup database", "setup tracker", "setup db", "upgrade tracker", or wants a cloud-backed database.
 ---
 
 # Database Setup Skill
 
-The application tracker is optional. Everything else (resume generation, scoring, tailoring) works without a database. This skill helps set up Postgres if the user wants to track their applications.
+By default, the application tracker stores data in a local JSON file (`docs/tracker.json`). This works out of the box with zero configuration.
+
+This skill upgrades the tracker to Postgres, which is useful if:
+- You want to access your data from multiple machines
+- You're tracking many applications and want query performance
+- You want a cloud-backed store
 
 ## Steps
 
 ### Step 1: Check current state
 
-Check if DATABASE_URL is already configured:
+Check if Postgres is already configured:
 
 ```bash
 grep DATABASE_URL .env 2>/dev/null
@@ -23,7 +28,15 @@ If it exists and has a value, verify it works:
 npm run tracker -- list
 ```
 
-If that works, tell the user: "Database is already configured and working."
+If that works, tell the user: "Postgres is already configured and working."
+
+If not configured, check how many applications are tracked locally:
+
+```bash
+cat docs/tracker.json 2>/dev/null | head -5
+```
+
+If there are existing entries, note them — we'll mention migration at the end.
 
 ### Step 2: Choose a provider
 
@@ -33,7 +46,10 @@ Ask the user (use AskUserQuestion):
 > 1. Supabase (free tier, cloud-hosted) — Recommended
 > 2. Neon (free tier, cloud-hosted)
 > 3. Local Postgres (you manage it)
-> 4. Skip — I don't need application tracking
+> 4. Keep using local JSON — no upgrade needed
+
+If they choose option 4, tell them:
+> "No problem. The local tracker at `docs/tracker.json` works great. You can always run `/setup-db` later if you change your mind."
 
 **For Supabase:**
 1. "Go to https://supabase.com and create a free project"
@@ -52,13 +68,17 @@ Ask the user (use AskUserQuestion):
 
 ### Step 3: Configure .env
 
-Tell the user to add the connection string to `.env`:
+Create or update `.env` with the connection string:
+
+```bash
+touch .env
+```
+
+Use the Edit tool to add:
 
 ```
 DATABASE_URL=postgresql://...
 ```
-
-Or offer to do it for them (use the Edit tool on .env).
 
 ### Step 4: Run migrations
 
@@ -66,14 +86,24 @@ Or offer to do it for them (use the Edit tool on .env).
 npx drizzle-kit push
 ```
 
-This creates the `applications` table.
+This creates the `applications` table in Postgres.
 
-### Step 5: Verify
+### Step 5: Migrate existing data (if any)
+
+If `docs/tracker.json` has existing entries, offer to migrate them:
+
+> "You have existing applications tracked locally. Want me to migrate them to Postgres?"
+
+If yes, read `docs/tracker.json`, iterate through entries, and insert each one using `npm run tracker -- add` or direct DB operations.
+
+### Step 6: Verify
 
 ```bash
 npm run tracker -- list
 ```
 
-Should show "No entries found." (empty table, no errors).
+Should show all applications (migrated ones + any new). No errors means Postgres is active.
 
-Tell the user: "Database is configured. Application tracking is now active."
+Tell the user:
+> "Postgres is set up. All tracker operations now use the database instead of the local JSON file."
+> "Your local `docs/tracker.json` is still there as a backup. You can delete it once you've confirmed everything migrated correctly."

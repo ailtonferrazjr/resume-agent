@@ -16,7 +16,7 @@ Open in Claude Code, then run:
 /onboard
 ```
 
-The onboarding skill interviews you for 15-30 minutes to build your career profile. After that, you're ready to apply to jobs.
+This is required before anything else works. The onboarding skill interviews you for 15-30 minutes to build your career profile, scoring data, and base resumes. After that, you're ready to apply to jobs.
 
 ## How It Works
 
@@ -49,9 +49,9 @@ The onboarding skill interviews you for 15-30 minutes to build your career profi
 
 ## Optional Integrations
 
-### Application Tracker (Postgres)
+### Upgrade Tracker to Postgres
 
-Track application stages, scores, and files. Any Postgres instance works (Supabase free tier, Neon, or local).
+The application tracker works out of the box using a local JSON file. To upgrade to Postgres (for cloud-backed, multi-machine access):
 
 ```
 /setup-db

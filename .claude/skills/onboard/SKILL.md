@@ -31,13 +31,21 @@ Ask the user (use AskUserQuestion):
 - Proceed to Phase 2 — but skip questions where the resume already provides strong answers
 
 **If LinkedIn URL provided:**
-- Use agent-browser to scrape the profile:
+- First check if agent-browser is installed:
   ```bash
-  agent-browser open "<linkedin_url>"
+  which agent-browser
+  ```
+- If NOT installed, tell the user:
+  > "agent-browser is needed for LinkedIn scraping. Install it with: `npm install -g agent-browser`"
+  > "After installing, you'll also need to log into LinkedIn once. Run `/setup-browser` for the full setup."
+  > "In the meantime, you can paste your resume text directly, or we can build from scratch."
+- If installed, check if LinkedIn session exists:
+  ```bash
+  agent-browser --profile .browser-profile open "<linkedin_url>"
   agent-browser wait --load networkidle
   agent-browser get-text
   ```
-- If login wall appears, tell the user to run `/setup-browser` first
+- If login wall appears, tell the user to run `/setup-browser` first to authenticate with LinkedIn
 - Extract career data from the profile text
 - Proceed to Phase 2 with extracted data as a starting point
 

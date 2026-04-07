@@ -1,6 +1,5 @@
-import { eq, ilike } from "drizzle-orm";
 import { db } from "./db";
-import { applications } from "./schema";
+import * as jsonStore from "./json-store";
 
 export const STAGES = [
   "Discovered",
@@ -35,7 +34,11 @@ export interface TrackerRow {
   coverLetterFileId: string;
 }
 
-function toTrackerRow(row: typeof applications.$inferSelect): TrackerRow {
+// When DATABASE_URL is set, use Postgres. Otherwise, use local JSON file.
+const usePostgres = db !== null;
+
+// Postgres-specific helpers (only loaded when DB is available)
+function toTrackerRow(row: any): TrackerRow {
   return {
     company: row.company,
     role: row.role,
@@ -56,16 +59,10 @@ function toTrackerRow(row: typeof applications.$inferSelect): TrackerRow {
   };
 }
 
-function isDbAvailable(): boolean {
-  if (!db) {
-    console.warn("[tracker] No DATABASE_URL configured — skipping tracker operation.");
-    return false;
-  }
-  return true;
-}
-
 export async function appendRow(row: Partial<TrackerRow>): Promise<void> {
-  if (!isDbAvailable()) return;
+  if (!usePostgres) return jsonStore.appendRow(row);
+
+  const { applications } = await import("./schema");
   const today = new Date().toISOString().split("T")[0];
   await db!.insert(applications).values({
     company: row.company ?? "",
@@ -88,7 +85,9 @@ export async function appendRow(row: Partial<TrackerRow>): Promise<void> {
 }
 
 export async function getAllRows(): Promise<TrackerRow[]> {
-  if (!isDbAvailable()) return [];
+  if (!usePostgres) return jsonStore.getAllRows();
+
+  const { applications } = await import("./schema");
   const rows = await db!.select().from(applications).orderBy(applications.dateDiscovered);
   return rows.map(toTrackerRow);
 }
@@ -96,7 +95,10 @@ export async function getAllRows(): Promise<TrackerRow[]> {
 export async function findRowByCompany(
   company: string
 ): Promise<{ rowIndex: string; data: TrackerRow } | null> {
-  if (!isDbAvailable()) return null;
+  if (!usePostgres) return jsonStore.findRowByCompany(company);
+
+  const { applications } = await import("./schema");
+  const { ilike } = await import("drizzle-orm");
   const rows = await db!.select().from(applications).where(ilike(applications.company, company));
   if (rows.length === 0) return null;
   return { rowIndex: rows[0].id, data: toTrackerRow(rows[0]) };
@@ -105,7 +107,10 @@ export async function findRowByCompany(
 export async function findById(
   id: string
 ): Promise<{ id: string; data: TrackerRow } | null> {
-  if (!isDbAvailable()) return null;
+  if (!usePostgres) return jsonStore.findById(id);
+
+  const { applications } = await import("./schema");
+  const { eq } = await import("drizzle-orm");
   const rows = await db!.select().from(applications).where(eq(applications.id, id));
   if (rows.length === 0) return null;
   return { id: rows[0].id, data: toTrackerRow(rows[0]) };
@@ -114,7 +119,10 @@ export async function findById(
 export async function findBySourceUrl(
   url: string
 ): Promise<{ id: string; data: TrackerRow } | null> {
-  if (!isDbAvailable()) return null;
+  if (!usePostgres) return jsonStore.findBySourceUrl(url);
+
+  const { applications } = await import("./schema");
+  const { eq } = await import("drizzle-orm");
   const rows = await db!.select().from(applications).where(eq(applications.sourceUrl, url));
   if (rows.length === 0) return null;
   return { id: rows[0].id, data: toTrackerRow(rows[0]) };
@@ -124,7 +132,10 @@ export async function updateRow(
   id: string,
   updates: Partial<TrackerRow>
 ): Promise<void> {
-  if (!isDbAvailable()) return;
+  if (!usePostgres) return jsonStore.updateRow(id, updates);
+
+  const { applications } = await import("./schema");
+  const { eq } = await import("drizzle-orm");
   await db!.update(applications).set({
     ...updates,
     lastUpdated: new Date().toISOString().split("T")[0],
@@ -132,12 +143,17 @@ export async function updateRow(
 }
 
 export async function deleteRow(id: string): Promise<void> {
-  if (!isDbAvailable()) return;
+  if (!usePostgres) return jsonStore.deleteRow(id);
+
+  const { applications } = await import("./schema");
+  const { eq } = await import("drizzle-orm");
   await db!.delete(applications).where(eq(applications.id, id));
 }
 
 export async function getAllRowsWithIds(): Promise<Array<{ id: string } & TrackerRow>> {
-  if (!isDbAvailable()) return [];
+  if (!usePostgres) return jsonStore.getAllRowsWithIds();
+
+  const { applications } = await import("./schema");
   const rows = await db!.select().from(applications).orderBy(applications.dateDiscovered);
   return rows.map((row) => ({ id: row.id, ...toTrackerRow(row) }));
 }
