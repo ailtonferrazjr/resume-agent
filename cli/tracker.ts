@@ -101,7 +101,7 @@ async function handleAdd(args: Record<string, string>): Promise<void> {
     lastUpdated: new Date().toISOString().split("T")[0],
   });
 
-  console.log(`Added: ${args.company} — ${args.role}`);
+  console.log(`Added: ${args.company}, ${args.role}`);
 }
 
 async function handleUpdate(args: Record<string, string>): Promise<void> {
