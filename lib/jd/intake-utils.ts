@@ -119,12 +119,14 @@ function splitIntoSections(text: string): SplitSections {
     const trimmed = line.trim();
     if (!trimmed) continue;
 
+    // Bullets are content even when they mention "experience" or "skills".
+    const isBullet = /^(?:[-•●▪]|\*\s)/.test(trimmed);
     const cleanLine = trimmed.replace(/^#+\s*/, "").replace(/[*_]/g, "");
-    if (respPatterns.test(cleanLine) && cleanLine.length < 80) {
+    if (!isBullet && respPatterns.test(cleanLine) && cleanLine.length < 80) {
       currentSection = "responsibilities";
       continue;
     }
-    if (reqPatterns.test(cleanLine) && cleanLine.length < 80) {
+    if (!isBullet && reqPatterns.test(cleanLine) && cleanLine.length < 80) {
       currentSection = "requirements";
       continue;
     }
