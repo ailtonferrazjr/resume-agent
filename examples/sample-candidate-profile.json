@@ -1,0 +1,12 @@
+{
+  "skills": {
+    "engineering": ["TypeScript", "Python", "Node.js", "React", "PostgreSQL", "AWS", "SQS", "Terraform", "Docker", "Redis"],
+    "operations": [],
+    "product": [],
+    "general": ["Mentoring"]
+  },
+  "titles": ["Senior Software Engineer", "Backend Engineer"],
+  "location": { "city": "Lisbon", "country": "Portugal", "region": "Europe", "remote": true },
+  "yearsExperience": { "engineering": 7, "operations": 0, "sales": 0, "total": 7 },
+  "strongestRoleTypes": ["engineering", "hybrid", "product", "biz-ops"]
+}
