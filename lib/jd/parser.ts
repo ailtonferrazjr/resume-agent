@@ -30,12 +30,10 @@ const BIZ_OPS_SIGNALS = [
 
 function extractSection(markdown: string, heading: string): string | null {
   const escaped = heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const pattern = new RegExp(`^##\\s+${escaped}[^\\n]*\\n([\\s\\S]*?)(?=^##\\s|\\z)`, "m");
+  // JS regex has no \z anchor; (?![\s\S]) matches the true end of input.
+  const pattern = new RegExp(`^##\\s+${escaped}[^\\n]*\\n([\\s\\S]*?)(?=^##\\s|(?![\\s\\S]))`, "m");
   const match = markdown.match(pattern);
-  if (match) return match[1].trim();
-  const fallback = new RegExp(`^##\\s+${escaped}[^\\n]*\\n([\\s\\S]*)$`, "m");
-  const fbMatch = markdown.match(fallback);
-  return fbMatch ? fbMatch[1].trim() : null;
+  return match ? match[1].trim() : null;
 }
 
 function extractBullets(section: string): string[] {
