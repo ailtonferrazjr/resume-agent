@@ -162,7 +162,7 @@ async function main() {
         dateDiscovered: new Date().toISOString().split("T")[0],
         lastUpdated: new Date().toISOString().split("T")[0],
       });
-      console.log(`Tracker: added ${jd.company} — ${jd.title} (stage: Scored)`);
+      console.log(`Tracker: added ${jd.company}, ${jd.title} (stage: Scored)`);
     }
   }
 

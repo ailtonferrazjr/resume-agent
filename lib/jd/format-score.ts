@@ -7,11 +7,11 @@ export function formatScore(result: ScoreResult): string {
 
   const pad = (label: string) => label.padEnd(18);
   const fmtLine = (label: string, score: number, max: number, pct: number, detail: string) =>
-    `  ${pad(label)} ${String(score).padStart(2)}/${max}  (${String(pct).padStart(3)}%) — ${detail}`;
+    `  ${pad(label)} ${String(score).padStart(2)}/${max}  (${String(pct).padStart(3)}%)  ${detail}`;
 
   const lines = [
     "",
-    `Job Score: ${result.total}/100 — ${jdName}`,
+    `Job Score: ${result.total}/100 (${jdName})`,
     "",
     fmtLine(
       "Skills Match:",
