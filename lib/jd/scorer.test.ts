@@ -1,6 +1,8 @@
+import { readFileSync } from "fs";
+import { resolve } from "path";
 import { describe, expect, it } from "vitest";
 import type { CandidateProfile } from "../candidate/profile";
-import type { ParsedJD } from "./parser";
+import { parseJD, type ParsedJD } from "./parser";
 import { scoreJob } from "./scorer";
 
 function profile(overrides: Partial<CandidateProfile> = {}): CandidateProfile {
@@ -157,5 +159,19 @@ describe("scoreJob: totals", () => {
       jd({ location: "Tokyo", keywords: ["Rust"], senioritySignals: ["15 years"], roleType: "biz-ops" })
     );
     expect(weak.recommendation).toBe("SKIP");
+  });
+});
+
+describe("scoreJob: example files", () => {
+  it("scores the fictional example JD against the example profile", () => {
+    const read = (file: string) => readFileSync(resolve(__dirname, "../../examples", file), "utf-8");
+    const exampleProfile = JSON.parse(read("sample-candidate-profile.json")) as CandidateProfile;
+    const result = scoreJob(exampleProfile, parseJD(read("sample-job-description.md")));
+
+    expect(result.breakdown.skillsMatch.matched).toEqual(
+      expect.arrayContaining(["typescript", "postgresql", "sqs"])
+    );
+    expect(result.breakdown.skillsMatch.matched).not.toContain("kafka");
+    expect(result.recommendation).toBe("STRONG APPLY");
   });
 });
