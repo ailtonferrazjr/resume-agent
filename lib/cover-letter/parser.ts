@@ -9,9 +9,9 @@ export function parseCoverLetter(markdown: string): ParsedCoverLetter {
     email: extractField(header, "Email") || "",
     phone: extractField(header, "Phone") || "",
     location: extractField(header, "Location") || "",
-    linkedin: {
-      text: extractField(header, "LinkedIn") || "",
-      url: extractLinkUrl(header, "LinkedIn") || "",
+    linkedin: extractLink(header, "LinkedIn") ?? {
+      text: extractField(header, "LinkedIn"),
+      url: "",
     },
   };
 
@@ -51,9 +51,9 @@ function extractField(text: string, field: string): string {
   return match ? match[1].trim() : "";
 }
 
-function extractLinkUrl(text: string, field: string): string {
+function extractLink(text: string, field: string): { text: string; url: string } | null {
   const match = text.match(new RegExp(`\\*\\*${field}:\\*\\*\\s*\\[([^\\]]+)\\]\\(([^)]+)\\)`, "i"));
-  return match ? match[2].trim() : "";
+  return match ? { text: match[1].trim(), url: match[2].trim() } : null;
 }
 
 function parseInlineBold(text: string): BulletPoint {
