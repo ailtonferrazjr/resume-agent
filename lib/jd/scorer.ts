@@ -68,22 +68,19 @@ const SKILL_EXPANSIONS: Record<string, string[]> = {
   "rest api": ["rest api", "rest", "api"],
 };
 
+// Match a term only when it is not glued to other letters or digits, so short
+// skills like "Go" or "R" do not match inside "Google" or "React".
+function containsTerm(text: string, term: string): boolean {
+  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(?<![a-z0-9])${escaped}(?![a-z0-9])`).test(text);
+}
+
 function skillMatchesJdText(skill: string, jdText: string): boolean {
   const normalized = normalizeForMatch(skill);
+  if (containsTerm(jdText, normalized)) return true;
 
-  // Direct inclusion check
-  if (jdText.includes(normalized)) return true;
-
-  // Check expanded forms
   const expansions = SKILL_EXPANSIONS[normalized];
-  if (expansions) {
-    return expansions.some((form) => jdText.includes(form));
-  }
-
-  // Check if skill is a substring of any word boundary match
-  const escaped = normalized.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const pattern = new RegExp(`\\b${escaped}\\b`);
-  return pattern.test(jdText);
+  return expansions ? expansions.some((form) => containsTerm(jdText, form)) : false;
 }
 
 function scoreSkills(
