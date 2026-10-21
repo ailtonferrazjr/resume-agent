@@ -1,4 +1,4 @@
-# Google Docs Resume Template — Formatting Spec
+# Google Docs Resume Template: Formatting Spec
 
 > Formatting reference for the .docx resume renderer
 
@@ -42,7 +42,7 @@
 - **Alignment:** Center
 
 ### Contact Info (below name)
-- **Layout:** Two-column — left side (Email, Phone) and right side (LinkedIn, Address)
+- **Layout:** Two-column, with the left side (Email, Phone) and right side (LinkedIn, Address)
 - **Labels** ("Email me:", "Call me:", "LinkedIn:", "Address:"):
   - Font: Work Sans, 10pt, Bold
   - Colour: Green (#34a853)
@@ -138,4 +138,4 @@
 - The job title line uses a right-aligned tab stop to push dates to the right margin
 - Horizontal rules separate the header from content, and between major sections
 - No summary/objective section in the current template (can be added)
-- Bullet lists have no extra paragraph spacing — tight vertical layout
+- Bullet lists have no extra paragraph spacing, for a tight vertical layout

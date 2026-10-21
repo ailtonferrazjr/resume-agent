@@ -1,10 +1,10 @@
-# CLAUDE.md — Resume Agent
+# CLAUDE.md: Resume Agent
 
 ## Project Purpose
 
 This is a career management system powered by Claude Code. It builds a rich career context through an onboarding interview, then uses that context to generate tailored resumes and cover letters for specific job descriptions.
 
-The core asset is `docs/career_master_context.md` — a comprehensive file capturing your full career history, metrics, technical detail, and narrative framing. This file is the single source of truth for all generated documents.
+The core asset is `docs/career_master_context.md`, a comprehensive file capturing your full career history, metrics, technical detail, and narrative framing. This file is the single source of truth for all generated documents.
 
 ---
 
@@ -12,7 +12,7 @@ The core asset is `docs/career_master_context.md` — a comprehensive file captu
 
 1. Clone the repo and run `npm install`
 2. Open in Claude Code
-3. Run `/onboard` — this interviews you to build your career profile
+3. Run `/onboard`, which interviews you to build your career profile
 4. Start applying: `/intake`, `/tailor`, `/cover-letter`
 
 ---
